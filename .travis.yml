@@ -1,16 +1,27 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
+cache:
+  apt: true
+  ccache: true
+  timeout: 691200
+  directories:
+    - .temp
+    - $HOME/.ccache
+    - $HOME/.composer/cache
 
+php:
+  - 7.0
+  - 7.1
+  
+install:
+  - phpenv config-rm xdebug.ini
+  
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-source --dev
+  - composer update --prefer-source
 
 script:
   - mkdir -p build/logs
-  - phpunit --coverage-clover build/logs/clover.xml
+  - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
  - php vendor/bin/coveralls -v
